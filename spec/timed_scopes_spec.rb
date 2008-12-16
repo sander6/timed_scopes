@@ -75,6 +75,11 @@ describe TimedScopes do
       prox = Thing.published_after(1.month.ago, "ASC").proxy_options
       prox[:order].should include("ASC")
     end
+
+    it "should allow no ordering by passing false as an additional argument" do
+      prox = Thing.published_after(1.month.ago, false).proxy_options
+      prox[:order].should be_nil
+    end
   end
   
   describe "#(attr)_before" do
@@ -92,6 +97,11 @@ describe TimedScopes do
     it "should allow ascending order by passing 'ASC' as an additional argument" do
       prox = Thing.published_before(1.month.ago, "ASC").proxy_options
       prox[:order].should include("ASC")
+    end
+
+    it "should allow no ordering by passing false as an additional argument" do
+      prox = Thing.published_before(1.month.ago, false).proxy_options
+      prox[:order].should be_nil
     end
   end
   
@@ -113,5 +123,10 @@ describe TimedScopes do
       prox = Thing.published_between(1.month.ago, 1.week.ago, "ASC").proxy_options
       prox[:order].should include("ASC")
     end    
+
+    it "should allow no ordering by passing false as an additional argument" do
+      prox = Thing.published_between(1.month.ago, 1.week.ago, false).proxy_options
+      prox[:order].should be_nil
+    end
   end
 end

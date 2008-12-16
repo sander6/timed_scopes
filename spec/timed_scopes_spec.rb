@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../../../../config/environment')
+# require File.expand_path(File.dirname(__FILE__) + '/../../../../config/environment')
 require 'timed_scopes'
 require 'sqlite3'
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
@@ -12,6 +12,7 @@ silence_warnings do
   ActiveRecord::Schema.define do
     create_table :things do |table|
       table.datetime  :published_at
+      table.boolean   :light_switch_on
       table.timestamps
     end
     
@@ -51,6 +52,10 @@ describe TimedScopes do
       Thing.should respond_to(:published_after)
       Thing.should respond_to(:published_before)
       Thing.should respond_to(:published_between)
+    end
+
+    it "should not create named scopes for an attribute without a time type" do
+      Thing.should_not respond_to(:light_switch_before)
     end
 
     it "should not define anything for a model with no '_on' or '_at' columns" do

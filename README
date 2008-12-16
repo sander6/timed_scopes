@@ -1,0 +1,24 @@
+=== Timed Scopes
+
+Times Scopes is a simple plugin to add some named scopes to your model based on their time columns.
+
+= Usage
+
+class Post < ActiveRecord::Base
+  has_timed_scopes
+end
+
+= What It Does
+
+Calling has_timed_scopes will reflect on the model's columns and add three scopes for each column ending in "_at" or "_on". For example, a model with a published_at column gets "published_after", "published_before", and "published_between".
+
+Post.published_after(1.month.ago)
+  # => :conditions => ['posts.published_at > ?', 1.month.ago]
+Post.published_before(1.year.ago)
+  # => :conditions => ['posts.published_at < ?', 1.year.ago]
+Post.published_between(2.months.ago, 1.month.ago)
+  # => :conditions => ['posts.published_at > ? AND posts.published_at < ?', 2.months.ago, 1.month.ago]
+
+By default, each timed scope will order the results on that column descending. You can ascend by passing "ASC" as an additional argument.
+
+Post.published_before(1.year.ago, "ASC")

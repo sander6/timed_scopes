@@ -5,9 +5,10 @@ module TimedScopes
   end
   
   module ClassMethods
+    SCOPEABLE_COLUMN_TYPES = [ :datetime, :timestamp ]
     
     def has_timed_scopes
-      column_names.each do |column_name|
+      timed_scopeable_columns.collect(&:name).each do |column_name|
         if column_name =~ /^([\w\d_]+)_(at|on)$/
           attr_prefix = $1
           at_or_on = $2
@@ -42,7 +43,13 @@ module TimedScopes
         end
       end
     end
-    
+
+    private
+
+    # Returns an Array of column names for which we should add timed named scopes
+    def timed_scopeable_columns
+      columns.select{ |c| SCOPEABLE_COLUMN_TYPES.include?(c.type) }
+    end
   end
   
 end

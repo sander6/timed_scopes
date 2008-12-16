@@ -58,4 +58,60 @@ describe TimedScopes do
       Thong.has_timed_scopes
     end
   end
+  
+  describe "#(attr)_after" do
+    it "should have the correct proxy_options" do
+      prox = Thing.published_after(1.month.ago).proxy_options
+      prox[:conditions][0].should include("things.published_at > ?")
+      prox[:conditions][1].should == Time.parse(1.month.ago.to_s)
+    end
+
+    it "should default to ordering by the given column DESC" do
+      prox = Thing.published_after(1.month.ago).proxy_options
+      prox[:order].should include("DESC")
+    end
+    
+    it "should allow ascending order by passing 'ASC' as an additional argument" do
+      prox = Thing.published_after(1.month.ago, "ASC").proxy_options
+      prox[:order].should include("ASC")
+    end
+  end
+  
+  describe "#(attr)_before" do
+    it "should have the correct proxy_options" do
+      prox = Thing.published_before(1.month.ago).proxy_options
+      prox[:conditions][0].should include("things.published_at < ?")
+      prox[:conditions][1].should == Time.parse(1.month.ago.to_s)
+    end
+
+    it "should default to ordering by the given column DESC" do
+      prox = Thing.published_before(1.month.ago).proxy_options
+      prox[:order].should include("DESC")
+    end
+    
+    it "should allow ascending order by passing 'ASC' as an additional argument" do
+      prox = Thing.published_before(1.month.ago, "ASC").proxy_options
+      prox[:order].should include("ASC")
+    end
+  end
+  
+  describe "#(attr)_between" do
+    it "should have the correct proxy_options" do
+      prox = Thing.published_between(1.month.ago, 1.week.ago).proxy_options
+      prox[:conditions][0].should include("things.published_at > ?")
+      prox[:conditions][0].should include("things.published_at < ?")      
+      prox[:conditions][1].should == Time.parse(1.month.ago.to_s)
+      prox[:conditions][2].should == Time.parse(1.week.ago.to_s)
+    end
+
+    it "should default to ordering by the given column DESC" do
+      prox = Thing.published_between(1.month.ago, 1.week.ago).proxy_options
+      prox[:order].should include("DESC")
+    end
+    
+    it "should allow ascending order by passing 'ASC' as an additional argument" do
+      prox = Thing.published_between(1.month.ago, 1.week.ago, "ASC").proxy_options
+      prox[:order].should include("ASC")
+    end    
+  end
 end

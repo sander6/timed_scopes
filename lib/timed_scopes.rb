@@ -21,6 +21,17 @@ module TimedScopes
             options[:order] = "#{self.table_name}.#{column_name} #{order}" if order
             options
           }
+
+          named_scope :"#{attr_prefix}_#{at_or_on}_or_after", lambda { |*args|
+            time = at_or_on =~ /at/ ? Time.parse(args[0].to_s) : Date.parse(args[0].to_s)
+            order = args[1].nil? ? "DESC" : args[1]
+            
+            options = {}
+            options[:conditions] = [ "#{self.table_name}.#{column_name} >= ?", time ]
+            options[:order] = "#{self.table_name}.#{column_name} #{order}" if order
+            options
+          }
+                    
           named_scope :"#{attr_prefix}_before", lambda { |*args|
             time = at_or_on =~ /at/ ? Time.parse(args[0].to_s) : Date.parse(args[0].to_s)
             order = args[1].nil? ? "DESC" : args[1]
@@ -30,6 +41,17 @@ module TimedScopes
             options[:order] = "#{self.table_name}.#{column_name} #{order}" if order
             options
           }
+
+          named_scope :"#{attr_prefix}_#{at_or_on}_or_before", lambda { |*args|
+            time = at_or_on =~ /at/ ? Time.parse(args[0].to_s) : Date.parse(args[0].to_s)
+            order = args[1].nil? ? "DESC" : args[1]
+
+            options = {}
+            options[:conditions] = [ "#{self.table_name}.#{column_name} <= ?", time ]
+            options[:order] = "#{self.table_name}.#{column_name} #{order}" if order
+            options
+          }
+
           named_scope :"#{attr_prefix}_between", lambda { |*args|
             start_time = at_or_on =~ /at/ ? Time.parse(args[0].to_s) : Date.parse(args[0].to_s)
             end_time = at_or_on =~ /at/ ? Time.parse(args[1].to_s) : Date.parse(args[1].to_s)

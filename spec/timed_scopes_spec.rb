@@ -9,6 +9,17 @@ describe TimedScopes do
     ActiveRecord::Base.should include(TimedScopes)
   end
   
+  describe "when the table doesn't exist" do
+    before(:each) do
+      class Stuff < ActiveRecord::Base
+      end
+    end
+    
+    it "should do nothing instead of throwing errors complaining that the table doesn't exist" do
+      lambda { Stuff.has_timed_scopes }.should_not raise_error(ActiveRecord::StatementInvalid)
+    end
+  end
+  
   describe "#has_timed_scopes" do
     
     it "should define five named_scopes on each datetime or timestamp column" do

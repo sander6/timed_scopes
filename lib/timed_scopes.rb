@@ -8,6 +8,7 @@ module TimedScopes
     SCOPEABLE_COLUMN_TYPES = [ :datetime, :timestamp ]
     
     def has_timed_scopes
+      return unless self.table_exists?
       timed_scopeable_columns.collect(&:name).each do |column_name|
         if column_name =~ /^([\w\d_]+)_(at|on)$/
           attr_prefix = $1
